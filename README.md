@@ -1,5 +1,5 @@
 # VideoSplitter by Satoru Tagawa
-Bash script to split a video files into multiple files, using ffmpeg
+Bash script to split a video file into multiple files, using ffmpeg
 
 Usage: split_video.sh <input_video> <split_times.txt>
 
