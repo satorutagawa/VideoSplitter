@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash -x
+#!/bin/bash -x
 
 set -e
 
@@ -12,11 +12,12 @@ echo "Input file: $1"
 echo "Split time file: $2"
 
 ext=${1##*.}
+fname=${1%.*}
 ctr=1
 
 while read line
 do
-	OUTFILE="${ctr}.${ext}"
+	OUTFILE="${fname}_${ctr}.${ext}"
 
 #	echo "${line}"
 	IFS=' '; read -a fields <<< "$line";
@@ -26,11 +27,11 @@ do
 	end_sec=$(convert2sec ${fields[1]})
 
 	# split file
-	ffmpeg -y -i ${1} -ss ${start_sec} -to ${end_sec} ${OUTFILE} < /dev/null 2> /dev/null
+	time ffmpeg -y -i ${1} -vcodec copy -acodec copy -ss ${start_sec} -to ${end_sec} ${OUTFILE} < /dev/null 2> /dev/null
 
 	# Using sem to run multiple instances of ffmpeg. Not any faster
 	#sem -j+0 ffmpeg -y -i ${1} -ss ${start_sec} -to ${end_sec} ${OUTFILE} < /dev/null 2> /dev/null ";" echo done
 
 	((ctr++))
 done < "$2"
-sem --wait
+#sem --wait
